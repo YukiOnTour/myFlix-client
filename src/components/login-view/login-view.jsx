@@ -1,12 +1,12 @@
-// login-view.jsx
 import React, { useState } from "react";
 
 export const LoginView = ({ onLoggedIn }) => {
   const [username, setUsername] = useState(""); 
   const [password, setPassword] = useState(""); 
   const [errors, setErrors] = useState({ username: '', password: '' });
+  const [loginError, setLoginError] = useState('');
 
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault(); 
 
     let hasErrors = false;
@@ -30,62 +30,64 @@ export const LoginView = ({ onLoggedIn }) => {
       return;
     }
 
-    const data = { access: username, secret: password };
+    const data = { username, password };
 
-    fetch("https://movieapp-77c122f67522.herokuapp.com/users", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(data)
-    })
-      .then(response => response.json())
-      .then(data => {
-        console.log("Login response: ", data);
-        if (data.user && data.token) {
-          localStorage.setItem('token', data.token); // Store token in localStorage
-          onLoggedIn(data.user); // Call the onLoggedIn callback with user
-        } else {
-          alert("No such user or invalid credentials");
-        }
-      })
-      .catch(e => {
-        console.error("Login error:", e);
-        alert("Something went wrong");
+    try {
+      const response = await fetch("https://movieapp-77c122f67522.herokuapp.com/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
       });
+
+      if (!response.ok) {
+        const errorData = await response.json(); // Parse error response as JSON
+        setLoginError(errorData.error || 'Login failed');
+        return;
+      }
+
+      const responseData = await response.json();
+      if (responseData.token) {
+        localStorage.setItem('token', responseData.token); // Store token in localStorage
+        onLoggedIn({ username }); // Call the onLoggedIn callback with user info
+      }
+    } catch (e) {
+      console.error("Login error:", e);
+      setLoginError('Something went wrong');
+    }
   };
 
   return (
     <form onSubmit={handleSubmit}>
       <div>
-        <label>
-          Username:
-          <input
-            type="text"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
-            minLength="3"
-            maxLength="20"
-            pattern="[a-zA-Z0-9_]+"
-            title="Username must be 3-20 characters long and can only contain letters, numbers, and underscores"
-            required
-          />
-        </label>
+        <label htmlFor="username">Username:</label>
+        <input
+          id="username"
+          name="username"
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          minLength="3"
+          maxLength="20"
+          required
+        />
         {errors.username && <p className="error-message">{errors.username}</p>}
       </div>
 
       <div>
-        <label>
-          Password:
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            minLength="6"
-            title="Password must be at least 6 characters long"
-            required
-          />
-        </label>
+        <label htmlFor="password">Password:</label>
+        <input
+          id="password"
+          name="password"
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          minLength="6"
+          required
+        />
         {errors.password && <p className="error-message">{errors.password}</p>}
       </div>
+
+      {loginError && <p className="error-message">{loginError}</p>}
 
       <button type="submit">Submit</button>
     </form>

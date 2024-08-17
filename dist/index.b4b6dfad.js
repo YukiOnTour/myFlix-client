@@ -27370,7 +27370,7 @@ $RefreshReg$(_c, "MainView");
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
 }
-},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","axios":"jo6P5","../MovieCard/MovieCard":"99v78","../MovieView/MovieView":"208CJ","../login-view/login-view":"9YtA0","@parcel/transformer-js/src/esmodule-helpers.js":"RzwVz","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"2eAmS"}],"jo6P5":[function(require,module,exports) {
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","axios":"jo6P5","../MovieCard/MovieCard":"99v78","../MovieView/MovieView":"208CJ","../login-view/login-view":"9YtA0","@parcel/transformer-js/src/esmodule-helpers.js":"RzwVz","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"2eAmS","../signup-view/signup-view":"4OGiN"}],"jo6P5":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "default", ()=>(0, _axiosJsDefault.default));
@@ -33523,7 +33523,6 @@ var prevRefreshSig = window.$RefreshSig$;
 $parcel$ReactRefreshHelpers$9fee.prelude(module);
 
 try {
-// login-view.jsx
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "LoginView", ()=>LoginView);
@@ -33539,7 +33538,8 @@ const LoginView = ({ onLoggedIn })=>{
         username: "",
         password: ""
     });
-    const handleSubmit = (event)=>{
+    const [loginError, setLoginError] = (0, _react.useState)("");
+    const handleSubmit = async (event)=>{
         event.preventDefault();
         let hasErrors = false;
         const newErrors = {
@@ -33562,8 +33562,213 @@ const LoginView = ({ onLoggedIn })=>{
             return;
         }
         const data = {
-            access: username,
-            secret: password
+            username,
+            password
+        };
+        try {
+            const response = await fetch("https://movieapp-77c122f67522.herokuapp.com/login", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(data)
+            });
+            if (!response.ok) {
+                const errorData = await response.json(); // Parse error response as JSON
+                setLoginError(errorData.error || "Login failed");
+                return;
+            }
+            const responseData = await response.json();
+            if (responseData.token) {
+                localStorage.setItem("token", responseData.token); // Store token in localStorage
+                onLoggedIn({
+                    username
+                }); // Call the onLoggedIn callback with user info
+            }
+        } catch (e) {
+            console.error("Login error:", e);
+            setLoginError("Something went wrong");
+        }
+    };
+    return /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("form", {
+        onSubmit: handleSubmit,
+        children: [
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                        htmlFor: "username",
+                        children: "Username:"
+                    }, void 0, false, {
+                        fileName: "src/components/login-view/login-view.jsx",
+                        lineNumber: 62,
+                        columnNumber: 9
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                        id: "username",
+                        name: "username",
+                        type: "text",
+                        value: username,
+                        onChange: (e)=>setUsername(e.target.value),
+                        minLength: "3",
+                        maxLength: "20",
+                        required: true
+                    }, void 0, false, {
+                        fileName: "src/components/login-view/login-view.jsx",
+                        lineNumber: 63,
+                        columnNumber: 9
+                    }, undefined),
+                    errors.username && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        className: "error-message",
+                        children: errors.username
+                    }, void 0, false, {
+                        fileName: "src/components/login-view/login-view.jsx",
+                        lineNumber: 73,
+                        columnNumber: 29
+                    }, undefined)
+                ]
+            }, void 0, true, {
+                fileName: "src/components/login-view/login-view.jsx",
+                lineNumber: 61,
+                columnNumber: 7
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                        htmlFor: "password",
+                        children: "Password:"
+                    }, void 0, false, {
+                        fileName: "src/components/login-view/login-view.jsx",
+                        lineNumber: 77,
+                        columnNumber: 9
+                    }, undefined),
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                        id: "password",
+                        name: "password",
+                        type: "password",
+                        value: password,
+                        onChange: (e)=>setPassword(e.target.value),
+                        minLength: "6",
+                        required: true
+                    }, void 0, false, {
+                        fileName: "src/components/login-view/login-view.jsx",
+                        lineNumber: 78,
+                        columnNumber: 9
+                    }, undefined),
+                    errors.password && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        className: "error-message",
+                        children: errors.password
+                    }, void 0, false, {
+                        fileName: "src/components/login-view/login-view.jsx",
+                        lineNumber: 87,
+                        columnNumber: 29
+                    }, undefined)
+                ]
+            }, void 0, true, {
+                fileName: "src/components/login-view/login-view.jsx",
+                lineNumber: 76,
+                columnNumber: 7
+            }, undefined),
+            loginError && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                className: "error-message",
+                children: loginError
+            }, void 0, false, {
+                fileName: "src/components/login-view/login-view.jsx",
+                lineNumber: 90,
+                columnNumber: 22
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
+                type: "submit",
+                children: "Submit"
+            }, void 0, false, {
+                fileName: "src/components/login-view/login-view.jsx",
+                lineNumber: 92,
+                columnNumber: 7
+            }, undefined)
+        ]
+    }, void 0, true, {
+        fileName: "src/components/login-view/login-view.jsx",
+        lineNumber: 60,
+        columnNumber: 5
+    }, undefined);
+};
+_s(LoginView, "5os9jbXt/v23S4cwDqjG35AZO4s=");
+_c = LoginView;
+var _c;
+$RefreshReg$(_c, "LoginView");
+
+  $parcel$ReactRefreshHelpers$9fee.postlude(module);
+} finally {
+  window.$RefreshReg$ = prevRefreshReg;
+  window.$RefreshSig$ = prevRefreshSig;
+}
+},{"react/jsx-dev-runtime":"iTorj","react":"21dqq","@parcel/transformer-js/src/esmodule-helpers.js":"RzwVz","@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js":"2eAmS"}],"4OGiN":[function(require,module,exports) {
+var $parcel$ReactRefreshHelpers$73d1 = require("@parcel/transformer-react-refresh-wrap/lib/helpers/helpers.js");
+var prevRefreshReg = window.$RefreshReg$;
+var prevRefreshSig = window.$RefreshSig$;
+$parcel$ReactRefreshHelpers$73d1.prelude(module);
+
+try {
+var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
+parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "SignupView", ()=>SignupView);
+var _jsxDevRuntime = require("react/jsx-dev-runtime");
+var _react = require("react");
+var _reactDefault = parcelHelpers.interopDefault(_react);
+var _s = $RefreshSig$();
+const SignupView = ({ onSignedUp })=>{
+    _s();
+    const [username, setUsername] = (0, _react.useState)("");
+    const [password, setPassword] = (0, _react.useState)("");
+    const [email, setEmail] = (0, _react.useState)(""); // State for email
+    const [birthday, setBirthday] = (0, _react.useState)(""); // State for birthday
+    const [errors, setErrors] = (0, _react.useState)({
+        username: "",
+        password: "",
+        email: "",
+        birthday: ""
+    });
+    const handleSubmit = (event)=>{
+        event.preventDefault();
+        let hasErrors = false;
+        const newErrors = {
+            username: "",
+            password: "",
+            email: "",
+            birthday: ""
+        };
+        // Validate username
+        if (username.length < 3) {
+            newErrors.username = "Username must be at least 3 characters long";
+            hasErrors = true;
+        } else if (username.length > 20) {
+            newErrors.username = "Username must be at most 20 characters long";
+            hasErrors = true;
+        }
+        // Validate password
+        if (password.length < 6) {
+            newErrors.password = "Password must be at least 6 characters long";
+            hasErrors = true;
+        }
+        // Validate email
+        const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailPattern.test(email)) {
+            newErrors.email = "Please enter a valid email address";
+            hasErrors = true;
+        }
+        // Validate birthday
+        if (!birthday) {
+            newErrors.birthday = "Birthday is required";
+            hasErrors = true;
+        }
+        if (hasErrors) {
+            setErrors(newErrors);
+            return;
+        }
+        const data = {
+            username,
+            password,
+            email,
+            birthday
         };
         fetch("https://movieapp-77c122f67522.herokuapp.com/users", {
             method: "POST",
@@ -33572,13 +33777,13 @@ const LoginView = ({ onLoggedIn })=>{
             },
             body: JSON.stringify(data)
         }).then((response)=>response.json()).then((data)=>{
-            console.log("Login response: ", data);
+            console.log("Signup response: ", data);
             if (data.user && data.token) {
-                localStorage.setItem("token", data.token); // Store token in localStorage
-                onLoggedIn(data.user); // Call the onLoggedIn callback with user
-            } else alert("No such user or invalid credentials");
+                localStorage.setItem("token", data.token);
+                onSignedUp(data.user);
+            } else alert("Signup failed");
         }).catch((e)=>{
-            console.error("Login error:", e);
+            console.error("Signup error:", e);
             alert("Something went wrong");
         });
     };
@@ -33600,28 +33805,28 @@ const LoginView = ({ onLoggedIn })=>{
                                 title: "Username must be 3-20 characters long and can only contain letters, numbers, and underscores",
                                 required: true
                             }, void 0, false, {
-                                fileName: "src/components/login-view/login-view.jsx",
-                                lineNumber: 61,
+                                fileName: "src/components/signup-view/signup-view.jsx",
+                                lineNumber: 82,
                                 columnNumber: 11
                             }, undefined)
                         ]
                     }, void 0, true, {
-                        fileName: "src/components/login-view/login-view.jsx",
-                        lineNumber: 59,
+                        fileName: "src/components/signup-view/signup-view.jsx",
+                        lineNumber: 80,
                         columnNumber: 9
                     }, undefined),
                     errors.username && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
                         className: "error-message",
                         children: errors.username
                     }, void 0, false, {
-                        fileName: "src/components/login-view/login-view.jsx",
-                        lineNumber: 72,
+                        fileName: "src/components/signup-view/signup-view.jsx",
+                        lineNumber: 93,
                         columnNumber: 29
                     }, undefined)
                 ]
             }, void 0, true, {
-                fileName: "src/components/login-view/login-view.jsx",
-                lineNumber: 58,
+                fileName: "src/components/signup-view/signup-view.jsx",
+                lineNumber: 79,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
@@ -33637,51 +33842,121 @@ const LoginView = ({ onLoggedIn })=>{
                                 title: "Password must be at least 6 characters long",
                                 required: true
                             }, void 0, false, {
-                                fileName: "src/components/login-view/login-view.jsx",
-                                lineNumber: 78,
+                                fileName: "src/components/signup-view/signup-view.jsx",
+                                lineNumber: 99,
                                 columnNumber: 11
                             }, undefined)
                         ]
                     }, void 0, true, {
-                        fileName: "src/components/login-view/login-view.jsx",
-                        lineNumber: 76,
+                        fileName: "src/components/signup-view/signup-view.jsx",
+                        lineNumber: 97,
                         columnNumber: 9
                     }, undefined),
                     errors.password && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
                         className: "error-message",
                         children: errors.password
                     }, void 0, false, {
-                        fileName: "src/components/login-view/login-view.jsx",
-                        lineNumber: 87,
+                        fileName: "src/components/signup-view/signup-view.jsx",
+                        lineNumber: 108,
                         columnNumber: 29
                     }, undefined)
                 ]
             }, void 0, true, {
-                fileName: "src/components/login-view/login-view.jsx",
-                lineNumber: 75,
+                fileName: "src/components/signup-view/signup-view.jsx",
+                lineNumber: 96,
+                columnNumber: 7
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                        children: [
+                            "Email:",
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                                type: "email",
+                                value: email,
+                                onChange: (e)=>setEmail(e.target.value),
+                                required: true
+                            }, void 0, false, {
+                                fileName: "src/components/signup-view/signup-view.jsx",
+                                lineNumber: 114,
+                                columnNumber: 11
+                            }, undefined)
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/components/signup-view/signup-view.jsx",
+                        lineNumber: 112,
+                        columnNumber: 9
+                    }, undefined),
+                    errors.email && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        className: "error-message",
+                        children: errors.email
+                    }, void 0, false, {
+                        fileName: "src/components/signup-view/signup-view.jsx",
+                        lineNumber: 121,
+                        columnNumber: 26
+                    }, undefined)
+                ]
+            }, void 0, true, {
+                fileName: "src/components/signup-view/signup-view.jsx",
+                lineNumber: 111,
+                columnNumber: 7
+            }, undefined),
+            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("div", {
+                children: [
+                    /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("label", {
+                        children: [
+                            "Birthday:",
+                            /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("input", {
+                                type: "date",
+                                value: birthday,
+                                onChange: (e)=>setBirthday(e.target.value),
+                                required: true
+                            }, void 0, false, {
+                                fileName: "src/components/signup-view/signup-view.jsx",
+                                lineNumber: 127,
+                                columnNumber: 11
+                            }, undefined)
+                        ]
+                    }, void 0, true, {
+                        fileName: "src/components/signup-view/signup-view.jsx",
+                        lineNumber: 125,
+                        columnNumber: 9
+                    }, undefined),
+                    errors.birthday && /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("p", {
+                        className: "error-message",
+                        children: errors.birthday
+                    }, void 0, false, {
+                        fileName: "src/components/signup-view/signup-view.jsx",
+                        lineNumber: 134,
+                        columnNumber: 29
+                    }, undefined)
+                ]
+            }, void 0, true, {
+                fileName: "src/components/signup-view/signup-view.jsx",
+                lineNumber: 124,
                 columnNumber: 7
             }, undefined),
             /*#__PURE__*/ (0, _jsxDevRuntime.jsxDEV)("button", {
                 type: "submit",
                 children: "Submit"
             }, void 0, false, {
-                fileName: "src/components/login-view/login-view.jsx",
-                lineNumber: 90,
+                fileName: "src/components/signup-view/signup-view.jsx",
+                lineNumber: 137,
                 columnNumber: 7
             }, undefined)
         ]
     }, void 0, true, {
-        fileName: "src/components/login-view/login-view.jsx",
-        lineNumber: 57,
+        fileName: "src/components/signup-view/signup-view.jsx",
+        lineNumber: 78,
         columnNumber: 5
     }, undefined);
 };
-_s(LoginView, "tWwZPLSjegF5+knB5nlHguIhydU=");
-_c = LoginView;
+_s(SignupView, "0pPkg8m+cK0Ovukt15nXKT4zDho=");
+_c = SignupView;
 var _c;
-$RefreshReg$(_c, "LoginView");
+$RefreshReg$(_c, "SignupView");
 
-  $parcel$ReactRefreshHelpers$9fee.postlude(module);
+  $parcel$ReactRefreshHelpers$73d1.postlude(module);
 } finally {
   window.$RefreshReg$ = prevRefreshReg;
   window.$RefreshSig$ = prevRefreshSig;
