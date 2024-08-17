@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MovieCard from '../MovieCard/MovieCard';
 import MovieView from '../MovieView/MovieView';
+import { LoginView } from "../login-view/login-view";
 
 export default function MainView() {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     axios.get(`${process.env.REACT_APP_API_URL}/movies`)
@@ -27,6 +29,9 @@ export default function MainView() {
 
   console.log('Movies state:', movies); // Log movies state to debug
 
+  if (!user) {
+    return <LoginView />;
+  }
   return (
     <div className="main-view">
       {selectedMovie ? (
