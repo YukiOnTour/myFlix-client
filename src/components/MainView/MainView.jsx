@@ -1,39 +1,45 @@
-import React, { useState } from 'react';
-import MovieCard from '../MovieCard/MovieCard'; // Correct import for MovieCard
-import MovieView from '../MovieView/MovieView'; // Correct import for MovieView
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import MovieCard from '../MovieCard/MovieCard';
+import MovieView from '../MovieView/MovieView';
 
 export default function MainView() {
-  // Movie data in state
-  const [movies, setMovies] = useState([
-    { _id: '1', title: 'Inception', description: 'A mind-bending thriller', genre: 'Sci-Fi', director: 'Christopher Nolan', poster: 'inception.jpg' },
-    { _id: '2', title: 'The Dark Knight', description: 'A heroic story of Batman', genre: 'Action', director: 'Christopher Nolan', poster: 'dark_knight.jpg' },
-    { _id: '3', title: 'Interstellar', description: 'Exploring space and time', genre: 'Sci-Fi', director: 'Christopher Nolan', poster: 'interstellar.jpg' }
-  ]);
-
-  // State to track selected movie
+  const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
 
-  // Handle movie click
+  useEffect(() => {
+    axios.get(`${process.env.REACT_APP_API_URL}/movies`)
+      .then(response => {
+        console.log('API response:', response.data); // Log response data
+        const fetchedMovies = Array.isArray(response.data) ? response.data : response.data.movies;
+        setMovies(fetchedMovies);
+      })
+      .catch(error => console.error('Error fetching movies:', error));
+  }, []);
+
   const onMovieClick = (movie) => {
     setSelectedMovie(movie);
   };
 
-  // Handle back click
   const onBackClick = () => {
     setSelectedMovie(null);
   };
 
+  console.log('Movies state:', movies); // Log movies state to debug
+
   return (
     <div className="main-view">
       {selectedMovie ? (
-        // Show MovieView when a movie is selected
         <MovieView movie={selectedMovie} onBackClick={onBackClick} />
       ) : (
-        // Show list of MovieCard components when no movie is selected
         <div className="movie-list">
-          {movies.map((movie) => (
-            <MovieCard key={movie._id} movie={movie} onClick={() => onMovieClick(movie)} />
-          ))}
+          {Array.isArray(movies) && movies.length > 0 ? (
+            movies.map((movie) => (
+              <MovieCard key={movie._id} movie={movie} onClick={() => onMovieClick(movie)} />
+            ))
+          ) : (
+            <p>No movies available.</p>
+          )}
         </div>
       )}
     </div>
