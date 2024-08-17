@@ -1,13 +1,13 @@
-// login-view.jsx
+// signup-view.jsx
 import React, { useState } from "react";
 
-export const LoginView = ({ onLoggedIn }) => {
-  const [username, setUsername] = useState(""); 
-  const [password, setPassword] = useState(""); 
+export const SignupView = ({ onSignedUp }) => {
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({ username: '', password: '' });
 
   const handleSubmit = (event) => {
-    event.preventDefault(); 
+    event.preventDefault();
 
     let hasErrors = false;
     const newErrors = { username: '', password: '' };
@@ -30,7 +30,7 @@ export const LoginView = ({ onLoggedIn }) => {
       return;
     }
 
-    const data = { access: username, secret: password };
+    const data = { username, password };
 
     fetch("https://movieapp-77c122f67522.herokuapp.com/users", {
       method: "POST",
@@ -39,16 +39,16 @@ export const LoginView = ({ onLoggedIn }) => {
     })
       .then(response => response.json())
       .then(data => {
-        console.log("Login response: ", data);
+        console.log("Signup response: ", data);
         if (data.user && data.token) {
-          localStorage.setItem('token', data.token); // Store token in localStorage
-          onLoggedIn(data.user); // Call the onLoggedIn callback with user
+          localStorage.setItem('token', data.token); 
+          onSignedUp(data.user); 
         } else {
-          alert("No such user or invalid credentials");
+          alert("Signup failed");
         }
       })
       .catch(e => {
-        console.error("Login error:", e);
+        console.error("Signup error:", e);
         alert("Something went wrong");
       });
   };

@@ -1,23 +1,31 @@
+// MainView.jsx
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import MovieCard from '../MovieCard/MovieCard';
 import MovieView from '../MovieView/MovieView';
 import { LoginView } from "../login-view/login-view";
+import { SignupView } from "../signup-view/signup-view";
 
 export default function MainView() {
   const [movies, setMovies] = useState([]);
   const [selectedMovie, setSelectedMovie] = useState(null);
   const [username, setUsername] = useState("");
+  const [isSignup, setIsSignup] = useState(false);
 
   useEffect(() => {
-    axios.get(`${process.env.REACT_APP_API_URL}/movies`)
-      .then(response => {
-        console.log('API response:', response.data); // Log response data
-        const fetchedMovies = Array.isArray(response.data) ? response.data : response.data.movies;
-        setMovies(fetchedMovies);
+    const token = localStorage.getItem('token');
+    if (token) {
+      axios.get(`${process.env.REACT_APP_API_URL}/movies`, {
+        headers: { Authorization: `Bearer ${token}` }
       })
-      .catch(error => console.error('Error fetching movies:', error));
-  }, []);
+        .then(response => {
+          console.log('API response:', response.data);
+          const fetchedMovies = Array.isArray(response.data) ? response.data : response.data.movies;
+          setMovies(fetchedMovies);
+        })
+        .catch(error => console.error('Error fetching movies:', error));
+    }
+  }, [username]);
 
   const onMovieClick = (movie) => {
     setSelectedMovie(movie);
@@ -27,13 +35,40 @@ export default function MainView() {
     setSelectedMovie(null);
   };
 
-  console.log('Movies state:', movies); // Log movies state to debug
+  const handleLogin = (user) => {
+    setUsername(user.username);
+  };
 
-  if (!user) {
-    return <LoginView />;
+  const handleSignup = (user) => {
+    setUsername(user.username);
+    setIsSignup(false);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('token');
+    setUsername("");
+  };
+
+  const handleSignupClick = () => {
+    setIsSignup(true);
+  };
+
+  if (!username) {
+    if (isSignup) {
+      return <SignupView onSignedUp={handleSignup} />;
+    }
+    return (
+      <div>
+        <LoginView onLoggedIn={handleLogin} />
+        <button onClick={handleSignupClick}>Sign Up</button>
+      </div>
+    );
   }
+
   return (
     <div className="main-view">
+      <button onClick={handleLogout}>Logout</button>
+
       {selectedMovie ? (
         <MovieView movie={selectedMovie} onBackClick={onBackClick} />
       ) : (
