@@ -53,7 +53,7 @@ export const SignupView = ({ onSignedUp }) => {
 
     const data = { username, password, email, birthday };
 
-    fetch("https://movieapp-77c122f67522.herokuapp.com/users", {
+    fetch("http://localhost:8080/users", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
@@ -61,9 +61,8 @@ export const SignupView = ({ onSignedUp }) => {
       .then(response => response.json())
       .then(data => {
         console.log("Signup response: ", data);
-        if (data.user && data.token) {
-          localStorage.setItem('token', data.token); 
-          onSignedUp(data.user); 
+        if (data && data.username) {
+          onSignedUp(data); 
         } else {
           alert("Signup failed");
         }

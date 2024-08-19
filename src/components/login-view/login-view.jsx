@@ -33,7 +33,7 @@ export const LoginView = ({ onLoggedIn }) => {
     const data = { username, password };
 
     try {
-      const response = await fetch("https://movieapp-77c122f67522.herokuapp.com/login", {
+      const response = await fetch("https://localhost:8080/auth/login", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data)
