@@ -53,7 +53,10 @@ export const SignupView = ({ onSignedUp }) => {
 
     const data = { username, password, email, birthday };
 
-    fetch("http://localhost:8080/users", {
+    // Log the data before making the API call
+    console.log("Data to be sent to the backend:", JSON.stringify(data, null, 2));
+
+    fetch(`${process.env.REACT_APP_API_URL}/users`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(data)
